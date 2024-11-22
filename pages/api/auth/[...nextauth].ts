@@ -15,14 +15,26 @@ export default NextAuth({
       },
       async authorize(credentials) {
         if (!credentials) {
+          console.error("No credentials provided");
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
 
-        if (user && bcrypt.compareSync(credentials.password, user.password)) {
+          if (!user) {
+            console.error("User not found");
+            return null;
+          }
+
+          const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
+          if (!isPasswordValid) {
+            console.error("Invalid password");
+            return null;
+          }
+
           return {
             id: user.id.toString(),
             email: user.email,
@@ -31,7 +43,8 @@ export default NextAuth({
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
           };
-        } else {
+        } catch (error) {
+          console.error("Error in authorize method:", error);
           return null;
         }
       },
@@ -52,8 +65,9 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: '/login',  // الصفحة المخصصة لتسجيل الدخول
-    error: '/auth/error',  // مسار الخطأ
+    signIn: '/login',
+    error: '/auth/error',
+    newUser: '/dashboard',
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
