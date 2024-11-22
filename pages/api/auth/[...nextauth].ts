@@ -54,12 +54,16 @@ export default NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;  // تأكد من إضافة البريد الإلكتروني
+        session.user.role = token.role as string;  // إضافة الدور
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;  // إضافة البريد الإلكتروني
+        token.role = user.role;  // إضافة الدور
       }
       return token;
     },
