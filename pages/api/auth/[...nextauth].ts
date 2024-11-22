@@ -40,7 +40,7 @@ export default NextAuth({
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;  // تأكد من أن token.id يتم تعريفه كـ string
+        session.user.id = token.id as string;
       }
       return session;
     },
@@ -50,6 +50,10 @@ export default NextAuth({
       }
       return token;
     },
+  },
+  pages: {
+    signIn: '/login',  // الصفحة المخصصة لتسجيل الدخول
+    error: '/auth/error',  // مسار الخطأ
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
