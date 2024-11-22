@@ -1,3 +1,5 @@
+'use client';  // إضافة توجيه العميل
+
 import { Metadata } from 'next';
 import PerformanceReport from '@/components/reports/PerformanceReport';
 import InventoryReport from '@/components/reports/InventoryReport';
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function ReportsPage() {
-  const [ setReportData] = useState<any>(null);
+  const [setReportData] = useState<any>(null);
 
   return (
     <div className="container mx-auto p-4 bg-white">
@@ -25,7 +27,7 @@ export default function ReportsPage() {
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">تقرير المخزون</h2>
-          <InventoryReport />
+          <InventoryReport/>
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">تقرير المبيعات</h2>
