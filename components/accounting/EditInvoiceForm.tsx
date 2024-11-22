@@ -22,7 +22,7 @@ interface EditInvoiceFormProps {
 
 export default function EditInvoiceForm({ invoice, onSave, onCancel, fetchInvoices }: EditInvoiceFormProps) {
     const [customer, setCustomer] = useState(invoice.customer);
-    const [amount, setAmount] = useState(invoice.amount);
+    const [amount, setAmount] = useState<number | ''>(invoice.amount);
     const [status, setStatus] = useState(invoice.status);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +56,13 @@ export default function EditInvoiceForm({ invoice, onSave, onCancel, fetchInvoic
             </div>
             <div>
                 <Label htmlFor="amount">المبلغ</Label>
-                <Input id="amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                <Input
+                    id="amount"
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                    required
+                />
             </div>
             <div>
                 <Label htmlFor="status">الحالة</Label>
