@@ -1,17 +1,11 @@
 'use client';  // إضافة توجيه العميل
 
-import { Metadata } from 'next';
 import PerformanceReport from '@/components/reports/PerformanceReport';
 import InventoryReport from '@/components/reports/InventoryReport';
 import SalesReport from '@/components/reports/SalesReport';
 import AccountingReport from '@/components/reports/AccountingReport';
 import ReportFilter from '@/components/reports/ReportFilter';
 import { useState } from 'react';
-
-export const metadata: Metadata = {
-  title: 'إدارة التقارير | نظام ERP',
-  description: 'عرض وتحليل البيانات بطريقة تفاعلية للأداء والمخزون والمبيعات والمحاسبة',
-};
 
 export default function ReportsPage() {
   const [setReportData] = useState<any>(null);
