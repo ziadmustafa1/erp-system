@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function ReportsPage() {
-  const [ setReportData] = useState(null);
+  const [ setReportData] = useState<any>(null);
 
   return (
     <div className="container mx-auto p-4 bg-white">
@@ -21,7 +21,7 @@ export default function ReportsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">تقرير الأداء الشهري</h2>
-          <PerformanceReport />
+          <PerformanceReport/>
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">تقرير المخزون</h2>
@@ -29,7 +29,7 @@ export default function ReportsPage() {
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">تقرير المبيعات</h2>
-          <SalesReport />
+          <SalesReport/>
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">التقرير المحاسبي</h2>
