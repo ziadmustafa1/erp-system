@@ -28,8 +28,9 @@ interface PageProps {
     params: { id: string };
 }
 
-export default async function ProjectPage({ params }: PageProps) {
-    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
+export default async function ProjectPage({ params }: Promise<PageProps>) {
+    const { id } = await params; // ضمان أن params هو من نوع Promise
+    const project = await prisma.project.findUnique({ where: { id: parseInt(id) } });
 
     if (!project) {
         notFound();
