@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
+    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id, 10) } });
     if (!project) {
         return {
             title: 'مشروع غير موجود',
@@ -24,13 +24,21 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     };
 }
 
+interface Project {
+    id: string;
+    name: string;
+    description: string;
+    status: string;
+    startDate: Date;
+    endDate: Date;
+}
+
 interface PageProps {
-    params: Promise<{ id: string }>;
+    params: { id: string };
 }
 
 export default async function ProjectPage({ params }: PageProps) {
-    const { id } = await params; // ضمان أن params هو من نوع Promise
-    const project = await prisma.project.findUnique({ where: { id: parseInt(id) } });
+    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id, 10) } });
 
     if (!project) {
         notFound();
@@ -38,14 +46,14 @@ export default async function ProjectPage({ params }: PageProps) {
 
     return (
         <div className="container mx-auto p-4 bg-indigo-50">
-            <h1 className="text-2xl font-bold mb-4 text-gray-900">{project.name}</h1>
-            <p className="text-gray-600 mb-4">{project.description}</p>
+            <h1 className="text-2xl font-bold mb-4 text-gray-900">{project?.name}</h1>
+            <p className="text-gray-600 mb-4">{project?.description}</p>
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <h2 className="text-xl font-semibold mb-2 text-gray-900">تفاصيل المشروع</h2>
-                    <p><strong>الحالة:</strong> {project.status}</p>
-                    <p><strong>تاريخ البدء:</strong> {new Date(project.startDate).toLocaleDateString('ar-SA')}</p>
-                    <p><strong>تاريخ الانتهاء المتوقع:</strong> {new Date(project.endDate).toLocaleDateString('ar-SA')}</p>
+                    <p><strong>الحالة:</strong> {project?.status}</p>
+                    <p><strong>تاريخ البدء:</strong> {new Date(project?.startDate).toLocaleDateString('ar-SA')}</p>
+                    <p><strong>تاريخ الانتهاء المتوقع:</strong> {new Date(project?.endDate).toLocaleDateString('ar-SA')}</p>
                 </div>
                 {/* Add more project details or components here */}
             </div>
