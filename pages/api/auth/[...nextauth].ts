@@ -1,3 +1,4 @@
+// pages/api/auth/[...nextauth].ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
@@ -24,7 +25,7 @@ export default NextAuth({
 
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
           return {
-            id: user.id.toString(),  // تحويل id إلى string
+            id: user.id.toString(),
             email: user.email,
             role: user.role,
             username: user.username,
@@ -40,7 +41,7 @@ export default NextAuth({
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        session.user.id = token.id;
       }
       return session;
     },
