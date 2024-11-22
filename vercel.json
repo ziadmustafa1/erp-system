@@ -1,0 +1,10 @@
+{
+    "build": {
+      "env": {
+        "NEXTAUTH_SECRET": "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiZWYxMWQ1ZTUtYzQ5OC00MjVjLTk0NzItYWY1ZTYzZTYyMzJiIiwidGVuYW50X2lkIjoiOTg4ODdkNjY1MWY1YjRlZTI2NmQ4MWE1ZWJhODM1MzBiY2E3MjBhYmNlNjFhNGJiNjQ2MmE2MDE0ZTZmZDBhMyIsImludGVybmFsX3NlY3JldCI6ImMyMTA4OGFkLTMyMjMtNDg3NS1iOTM4LWJhMThmYTI0ZjkxNSJ9.I-Nl7BkP3H5NSwTy0x-iQoNL8df7e-zO6vc9DAtq0ic",
+        "DATABASE_URL": "your-database-url"
+      }
+    },
+    "buildCommand": "npm run build && prisma generate"
+  }
+  
