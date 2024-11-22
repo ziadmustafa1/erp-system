@@ -1,34 +1,38 @@
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { PrismaClient } from '@prisma/client'
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export async function generateStaticParams() {
-    const projects = await prisma.project.findMany({ select: { id: true } })
+    const projects = await prisma.project.findMany({ select: { id: true } });
     return projects.map((project) => ({
         id: project.id.toString(),
-    }))
+    }));
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } })
+    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
     if (!project) {
         return {
             title: 'مشروع غير موجود',
-        }
+        };
     }
     return {
         title: `${project.name} | إدارة المشاريع`,
         description: project.description,
-    }
+    };
 }
 
-export default async function ProjectPage({ params }: { params: { id: string } }) {
-    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } })
+interface PageProps {
+    params: { id: string };
+}
+
+export default async function ProjectPage({ params }: PageProps) {
+    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
 
     if (!project) {
-        notFound()
+        notFound();
     }
 
     return (
@@ -39,12 +43,11 @@ export default async function ProjectPage({ params }: { params: { id: string } }
                 <div>
                     <h2 className="text-xl font-semibold mb-2 text-gray-900">تفاصيل المشروع</h2>
                     <p><strong>الحالة:</strong> {project.status}</p>
-                    <p><strong>تاريخ البدء:</strong> {project.startDate.toLocaleDateString('ar-SA')}</p>
-                    <p><strong>تاريخ الانتهاء المتوقع:</strong> {project.endDate.toLocaleDateString('ar-SA')}</p>
+                    <p><strong>تاريخ البدء:</strong> {new Date(project.startDate).toLocaleDateString('ar-SA')}</p>
+                    <p><strong>تاريخ الانتهاء المتوقع:</strong> {new Date(project.endDate).toLocaleDateString('ar-SA')}</p>
                 </div>
                 {/* Add more project details or components here */}
             </div>
         </div>
-    )
+    );
 }
-
