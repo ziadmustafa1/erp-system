@@ -34,8 +34,22 @@ const options = {
   },
 };
 
+interface Product {
+  name: string;
+  quantity: number;
+}
+
+interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+  }[];
+}
+
 export default function InventoryReport() {
-  const [data, setData] = useState({
+  const [data, setData] = useState<ChartData>({
     labels: [],
     datasets: [
       {
@@ -50,7 +64,7 @@ export default function InventoryReport() {
     const fetchData = async () => {
       try {
         const response = await fetch('/api/products');
-        const products = await response.json();
+        const products: Product[] = await response.json();
         console.log('Received products:', products); // للتحقق من البيانات
 
         if (Array.isArray(products)) {

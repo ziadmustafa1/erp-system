@@ -11,22 +11,20 @@ type AccountingEntry = {
     status: string
 }
 
-export default function AccountingReport() {
+interface AccountingReportProps {
+    data?: AccountingEntry[];
+}
+
+export default function AccountingReport({ data }: AccountingReportProps) {
     const [entries, setEntries] = useState<AccountingEntry[]>([])
-    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const fetchAccountingData = async () => {
-            const response = await fetch('/api/reports/accounting');
-            const data: AccountingEntry[] = await response.json();
+        if (data) {
             setEntries(data);
-            setLoading(false);
         }
+    }, [data])
 
-        fetchAccountingData();
-    }, [])
-
-    if (loading) {
+    if (!data) {
         return <div>جاري تحميل البيانات...</div>
     }
 
@@ -53,3 +51,4 @@ export default function AccountingReport() {
         </Table>
     )
 }
+

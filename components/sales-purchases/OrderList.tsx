@@ -7,9 +7,19 @@ import CancelOrder from './CancelOrder';
 import EditOrderForm from './EditOrderForm';
 import OrderDetails from './OrderDetails';
 
+interface Order {
+    id: string;
+    customerName: string;
+    customerNumber: string; // إضافة خاصية customerNumber
+    product: string;
+    quantity: number;
+    orderDate: string;
+    status: string;
+}
+
 export default function OrderList() {
-    const [orders, setOrders] = useState([]);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [isCancelling, setIsCancelling] = useState(false);
 
@@ -17,7 +27,7 @@ export default function OrderList() {
         const fetchOrders = async () => {
             try {
                 const response = await fetch('/api/orders');
-                const data = await response.json();
+                const data: Order[] = await response.json();
                 setOrders(data);
             } catch (error) {
                 console.error('Error fetching orders:', error);
@@ -27,13 +37,13 @@ export default function OrderList() {
         fetchOrders();
     }, []);
 
-    const handleEdit = (order) => {
+    const handleEdit = (order: Order) => {
         setSelectedOrder(order);
         setIsEditing(true);
         setIsCancelling(false);
     };
 
-    const handleCancel = (order) => {
+    const handleCancel = (order: Order) => {
         setSelectedOrder(order);
         setIsCancelling(true);
         setIsEditing(false);
@@ -46,7 +56,7 @@ export default function OrderList() {
         const fetchOrders = async () => {
             try {
                 const response = await fetch('/api/orders');
-                const data = await response.json();
+                const data: Order[] = await response.json();
                 setOrders(data);
             } catch (error) {
                 console.error('Error fetching orders:', error);

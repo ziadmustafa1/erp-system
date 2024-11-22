@@ -1,4 +1,3 @@
-// components/sales-purchases/SupplierManagement.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,8 +5,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import AddSupplierForm from './AddSupplierForm'; // مكون لإضافة موردين
 
+interface Supplier {
+    id: string;
+    name: string;
+    product: string;
+    contact: string;
+}
+
 export default function SupplierManagement() {
-    const [suppliers, setSuppliers] = useState([]);
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [isAdding, setIsAdding] = useState(false);
 
     useEffect(() => {
@@ -16,7 +22,7 @@ export default function SupplierManagement() {
                 const response = await fetch('/api/suppliers');
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
-                    const data = await response.json();
+                    const data: Supplier[] = await response.json();
                     console.log('Received suppliers:', data); // للتحقق من البيانات
 
                     if (Array.isArray(data)) {
@@ -39,7 +45,7 @@ export default function SupplierManagement() {
         fetchSuppliers();
     }, []);
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (id: string) => {
         try {
             const response = await fetch(`/api/suppliers?id=${id}`, {
                 method: 'DELETE',
@@ -60,7 +66,7 @@ export default function SupplierManagement() {
         const fetchSuppliers = async () => {
             try {
                 const response = await fetch('/api/suppliers');
-                const data = await response.json();
+                const data: Supplier[] = await response.json();
                 setSuppliers(data);
             } catch (error) {
                 console.error('Error fetching suppliers:', error);
@@ -94,7 +100,11 @@ export default function SupplierManagement() {
                                 <Button variant="outline" size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-white" onClick={() => handleDelete(supplier.id)}>حذف</Button>
                             </TableCell>
                         </TableRow>
-                    )) : <TableRow><TableCell colSpan="4">لا يوجد موردين</TableCell></TableRow>}
+                    )) : (
+                        <TableRow>
+                            <TableCell colSpan={4}>لا يوجد موردين</TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </div>

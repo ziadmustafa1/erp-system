@@ -14,9 +14,10 @@ interface EditEmployeeFormProps {
         department: string;
     };
     onSave: () => void;
+    onCancel: () => void;
 }
 
-export default function EditEmployeeForm({ employee, onSave }: EditEmployeeFormProps) {
+export default function EditEmployeeForm({ employee, onSave, onCancel }: EditEmployeeFormProps) {
     const [name, setName] = useState(employee.name);
     const [position, setPosition] = useState(employee.position);
     const [department, setDepartment] = useState(employee.department);
@@ -75,6 +76,9 @@ export default function EditEmployeeForm({ employee, onSave }: EditEmployeeFormP
             </div>
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'جاري تحديث الموظف...' : 'تحديث الموظف'}
+            </Button>
+            <Button type="button" onClick={onCancel}>
+                إلغاء
             </Button>
         </form>
     );

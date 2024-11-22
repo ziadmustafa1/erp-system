@@ -1,4 +1,3 @@
-// pages/api/orders/cancel.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 
@@ -6,7 +5,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'PUT') {
-        const { id, reason } = req.body;
+        const { id } = req.body;
         try {
             // استرجاع الطلب
             const order = await prisma.order.findUnique({
@@ -21,20 +20,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await prisma.order.update({
                 where: { id },
                 data: {
-                    status: 'ملغى',
-                    reason
+                    status: 'ملغى'
                 }
             });
 
             // استرجاع الكمية إلى المخزون
-            await prisma.inventoryItem.update({
-                where: { name: order.product },
-                data: {
-                    quantity: {
-                        increment: order.quantity
-                    }
-                }
+            const inventoryItem = await prisma.inventoryItem.findFirst({
+                where: { name: order.product }
             });
+
+            if (inventoryItem) {
+                await prisma.inventoryItem.update({
+                    where: { id: inventoryItem.id },
+                    data: {
+                        quantity: {
+                            increment: order.quantity
+                        }
+                    }
+                });
+            }
 
             res.status(200).json({ message: 'Order cancelled successfully' });
         } catch (error) {

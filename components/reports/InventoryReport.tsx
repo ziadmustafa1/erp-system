@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -34,8 +35,12 @@ const options = {
     },
 }
 
-export default function InventoryReport() {
-    const [data, setData] = useState({
+interface InventoryReportProps {
+    data?: Record<string, any>;
+}
+
+export default function InventoryReport({ data }: InventoryReportProps) {
+    const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
             {
@@ -47,34 +52,27 @@ export default function InventoryReport() {
     });
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api/reports/inventory');
-                const products = await response.json();
-                const labels = products.map(product => product.name);
-                const quantities = products.map(product => product.quantity);
+        if (data) {
+            const labels = data.map((product: any) => product.name);
+            const quantities = data.map((product: any) => product.quantity);
 
-                setData({
-                    labels,
-                    datasets: [
-                        {
-                            label: 'الكمية المتوفرة',
-                            data: quantities,
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        },
-                    ],
-                });
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
+            setChartData({
+                labels,
+                datasets: [
+                    {
+                        label: 'الكمية المتوفرة',
+                        data: quantities,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    },
+                ],
+            });
+        }
+    }, [data]);
 
     return (
         <div className="w-full h-96">
-            <Bar options={options} data={data} />
+            <Bar options={options} data={chartData} />
         </div>
     )
 }
+

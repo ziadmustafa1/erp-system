@@ -6,20 +6,43 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function EditOrderForm({ order, onSave, onCancel }) {
+interface Product {
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
+
+interface Order {
+    id: string;
+    customerName: string;
+    customerNumber: string;
+    product: string;
+    quantity: number;
+    orderDate: string;
+    status: string;
+}
+
+interface EditOrderFormProps {
+    order: Order;
+    onSave: () => void;
+    onCancel: () => void;
+}
+
+export default function EditOrderForm({ order, onSave, onCancel }: EditOrderFormProps) {
     const [customerName, setCustomerName] = useState(order.customerName);
     const [customerNumber, setCustomerNumber] = useState(order.customerNumber);
     const [product, setProduct] = useState(order.product);
-    const [quantity, setQuantity] = useState(order.quantity);
+    const [quantity, setQuantity] = useState(order.quantity.toString());
     const [orderDate, setOrderDate] = useState(order.orderDate.split('T')[0]);
     const [status, setStatus] = useState(order.status);
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState<Product[]>([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const response = await fetch('/api/products');
-                const data = await response.json();
+                const data: Product[] = await response.json();
                 setProducts(data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -29,20 +52,20 @@ export default function EditOrderForm({ order, onSave, onCancel }) {
         fetchProducts();
     }, []);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const response = await fetch(`/api/orders/update`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    id: order.id, 
-                    customerName, 
-                    customerNumber, 
-                    product, 
-                    quantity: parseInt(quantity, 10), 
-                    orderDate, 
-                    status 
+                body: JSON.stringify({
+                    id: order.id,
+                    customerName,
+                    customerNumber,
+                    product,
+                    quantity: parseInt(quantity, 10),
+                    orderDate,
+                    status
                 }),
             });
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -36,8 +37,12 @@ const options = {
     },
 }
 
-export default function PerformanceReport() {
-    const [data, setData] = useState({
+interface PerformanceReportProps {
+    data?: Record<string, any>;
+}
+
+export default function PerformanceReport({ data }: PerformanceReportProps) {
+    const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
             {
@@ -56,42 +61,35 @@ export default function PerformanceReport() {
     });
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api/reports/performance');
-                const performance = await response.json();
-                const labels = performance.map(item => new Date(item.startDate).toLocaleString('default', { month: 'long' }));
-                const revenue = performance.map(item => item.revenue);
-                const expenses = performance.map(item => item.expenses);
+        if (data) {
+            const labels = data.map((item: any) => new Date(item.startDate).toLocaleString('default', { month: 'long' }));
+            const revenue = data.map((item: any) => item.revenue);
+            const expenses = data.map((item: any) => item.expenses);
 
-                setData({
-                    labels,
-                    datasets: [
-                        {
-                            label: 'الإيرادات',
-                            data: revenue,
-                            borderColor: 'rgb(255, 99, 132)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        },
-                        {
-                            label: 'المصروفات',
-                            data: expenses,
-                            borderColor: 'rgb(53, 162, 235)',
-                            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                        },
-                    ],
-                });
-            } catch (error) {
-                console.error('Error fetching performance data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
+            setChartData({
+                labels,
+                datasets: [
+                    {
+                        label: 'الإيرادات',
+                        data: revenue,
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    },
+                    {
+                        label: 'المصروفات',
+                        data: expenses,
+                        borderColor: 'rgb(53, 162, 235)',
+                        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                    },
+                ],
+            });
+        }
+    }, [data]);
 
     return (
         <div className="w-full h-96">
-            <Line options={options} data={data} />
+            <Line options={options} data={chartData} />
         </div>
     )
 }
+

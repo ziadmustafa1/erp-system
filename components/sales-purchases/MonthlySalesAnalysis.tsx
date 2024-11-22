@@ -34,8 +34,22 @@ const options = {
   },
 };
 
+interface Order {
+  orderDate: string;
+  amount: number;
+}
+
+interface ChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+  }[];
+}
+
 export default function MonthlySalesAnalysis() {
-  const [data, setData] = useState({
+  const [data, setData] = useState<ChartData>({
     labels: [],
     datasets: [
       {
@@ -50,7 +64,7 @@ export default function MonthlySalesAnalysis() {
     const fetchSalesData = async () => {
       try {
         const response = await fetch('/api/orders');
-        const orders = await response.json();
+        const orders: Order[] = await response.json();
 
         // Group sales data by month and year
         const monthlySales = orders.reduce((acc, order) => {
@@ -64,7 +78,7 @@ export default function MonthlySalesAnalysis() {
           }
           acc[key] += order.amount; // Assuming `amount` is the total price of the order
           return acc;
-        }, {});
+        }, {} as Record<string, number>);
 
         const labels = Object.keys(monthlySales);
         const salesData = Object.values(monthlySales);

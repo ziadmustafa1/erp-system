@@ -25,7 +25,7 @@ export default function Navbar() {
             <p>Loading...</p>
           ) : session ? (
             <>
-              <span className="text-white">{session.user.name}</span>
+              <span className="text-white">{session.user?.name}</span>
               <Link href="/dashboard">
                 <Button variant="secondary">لوحة التحكم</Button>
               </Link>
