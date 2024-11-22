@@ -1,25 +1,15 @@
-'use client';
 
-import { useState } from 'react';
 import PerformanceReport from '@/components/reports/PerformanceReport';
 import InventoryReport from '@/components/reports/InventoryReport';
 import SalesReport from '@/components/reports/SalesReport';
 import AccountingReport from '@/components/reports/AccountingReport';
-import ReportFilter from '@/components/reports/ReportFilter';
 
-interface ReportData {
-  // يجب تحديث هذا النوع ليعكس بنية البيانات الخاصة بك
-  reportType: string;
-  data: any; // حدد بنية البيانات الفعلية هنا
-}
 
 export default function ReportsPage() {
-  const [setReportData] = useState<ReportData | null>(null);
 
   return (
     <div className="container mx-auto p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4 text-gray-700">إدارة التقارير</h1>
-      <ReportFilter setReportData={setReportData} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
           <h2 className="text-xl font-semibold mb-2 text-gray-700">تقرير الأداء الشهري</h2>
