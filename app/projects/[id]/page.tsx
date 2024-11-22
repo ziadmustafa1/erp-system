@@ -25,11 +25,12 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 }
 
 interface PageProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default async function ProjectPage({ params }: PageProps) {
-    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
+    const { id } = await params; // ضمان أن params هو من نوع Promise
+    const project = await prisma.project.findUnique({ where: { id: parseInt(id) } });
 
     if (!project) {
         notFound();
