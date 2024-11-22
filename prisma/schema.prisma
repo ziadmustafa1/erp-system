@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Employee {
+  id         Int      @id @default(autoincrement())
+  name       String
+  position   String
+  department String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+model Invoice {
+  id        Int      @id @default(autoincrement())
+  customer  String
+  amount    Float
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model InventoryItem {
+  id        Int     @id @default(autoincrement())
+  name      String
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Expense {
+  id       Int      @id @default(autoincrement())
+  amount   Float
+  category String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  name      String
+  product   String
+  contact   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Order {
+  id             Int      @id @default(autoincrement())
+  customerName   String
+  customerNumber String
+  product        String
+  quantity       Int
+  orderDate      DateTime
+  amount         Float
+  status         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+}
