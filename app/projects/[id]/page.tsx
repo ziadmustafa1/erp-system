@@ -1,4 +1,3 @@
-'use client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PrismaClient } from '@prisma/client';
@@ -29,24 +28,11 @@ interface PageProps {
     params: { id: string };
 }
 
-export default function ProjectPage({ params }: PageProps) {
-    const [project, setProject] = useState<Project | null>(null);
-
-    useEffect(() => {
-        const fetchProject = async () => {
-            const projectData = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
-            if (!projectData) {
-                notFound();
-            } else {
-                setProject(projectData);
-            }
-        };
-
-        fetchProject();
-    }, [params.id]);
+export default async function ProjectPage({ params }: PageProps) {
+    const project = await prisma.project.findUnique({ where: { id: parseInt(params.id) } });
 
     if (!project) {
-        return <div>Loading...</div>;
+        notFound();
     }
 
     return (
