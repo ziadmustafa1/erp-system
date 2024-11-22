@@ -1,14 +1,20 @@
-'use client';  // إضافة توجيه العميل
+'use client';
 
+import { useState } from 'react';
 import PerformanceReport from '@/components/reports/PerformanceReport';
 import InventoryReport from '@/components/reports/InventoryReport';
 import SalesReport from '@/components/reports/SalesReport';
 import AccountingReport from '@/components/reports/AccountingReport';
 import ReportFilter from '@/components/reports/ReportFilter';
-import { useState } from 'react';
+
+interface ReportData {
+  // يجب تحديث هذا النوع ليعكس بنية البيانات الخاصة بك
+  reportType: string;
+  data: any; // حدد بنية البيانات الفعلية هنا
+}
 
 export default function ReportsPage() {
-  const [setReportData] = useState<any>(null);
+  const [setReportData] = useState<ReportData | null>(null);
 
   return (
     <div className="container mx-auto p-4 bg-white">

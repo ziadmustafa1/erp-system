@@ -3,12 +3,18 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import DatePickerWithRange from "@/components/ui/DateRangePicker"; // تأكد من أن المسار صحيح
+import DatePickerWithRange from "@/components/ui/DateRangePicker";
 import { addMonths } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 interface ReportFilterProps {
-  setReportData: (data: any) => void;
+  setReportData: (data: ReportData) => void;
+}
+
+interface ReportData {
+  // يجب تحديث هذا النوع ليعكس بنية البيانات الخاصة بك
+  reportType: string;
+  data: any; // حدد بنية البيانات الفعلية هنا
 }
 
 export default function ReportFilter({ setReportData }: ReportFilterProps) {
@@ -40,7 +46,7 @@ export default function ReportFilter({ setReportData }: ReportFilterProps) {
     try {
       const response = await fetch(endpoint);
       const data = await response.json();
-      setReportData(data);
+      setReportData({ reportType, data });
     } catch (error) {
       console.error('Error fetching report:', error);
     }
