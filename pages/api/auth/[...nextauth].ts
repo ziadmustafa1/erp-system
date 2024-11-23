@@ -1,7 +1,7 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -10,68 +10,55 @@ export default NextAuth({
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials) {
-          console.error("No credentials provided");
-          return null;
-        }
+      authorize: async (credentials) => {
+        if (!credentials) return null;
 
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
 
-          if (!user) {
-            console.error("User not found");
-            return null;
-          }
-
-          const isPasswordValid = bcrypt.compareSync(credentials.password, user.password);
-          if (!isPasswordValid) {
-            console.error("Invalid password");
-            return null;
-          }
-
+        if (user && await bcrypt.compare(credentials.password, user.password)) {
           return {
-            id: user.id.toString(),
+            id: user.id.toString(), // تحويل id إلى string
             email: user.email,
             role: user.role,
             username: user.username,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
           };
-        } catch (error) {
-          console.error("Error in authorize method:", error);
-          return null;
         }
+
+        return null;
       },
     }),
   ],
   callbacks: {
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.email = token.email as string;  // تأكد من إضافة البريد الإلكتروني
-        session.user.role = token.role as string;  // إضافة الدور
-      }
-      return session;
-    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email;  // إضافة البريد الإلكتروني
-        token.role = user.role;  // إضافة الدور
+        token.role = user.role;
+        token.username = user.username;
       }
       return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string; // تحديد النوع بشكل صريح
+        session.user.role = token.role as string;
+        session.user.username = token.username as string;
+      }
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   pages: {
     signIn: '/login',
-    error: '/auth/error',
+    signOut: '/login',
+    error: '/login',
+    verifyRequest: '/login',
     newUser: '/dashboard',
   },
-  secret: process.env.NEXTAUTH_SECRET,
 });

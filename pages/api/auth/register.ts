@@ -1,4 +1,3 @@
-// pages/api/auth/register.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
@@ -24,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
 
-      return res.status(201).json(user);
+      return res.status(201).json({ message: 'User created successfully', userId: user.id });
     } catch (error) {
       console.error('Error registering user:', error);
       return res.status(500).json({ error: 'Internal server error' });
@@ -34,3 +33,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+

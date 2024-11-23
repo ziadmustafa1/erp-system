@@ -18,12 +18,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            // هنا يمكنك تنفيذ إرسال البريد الإلكتروني لاستعادة كلمة المرور
-            // نحن فقط نعرض رسالة توضيحية حالياً
+            // TODO: Implement email sending logic here
+            // For now, we'll just return a success message
             res.status(200).json({ message: 'Password reset link sent to your email' });
         } catch (error) {
             console.error('Error finding user:', error);
-            res.status(500).json({ error: 'Failed to find user' });
+            res.status(500).json({ error: 'Failed to process request' });
         } finally {
             await prisma.$disconnect();
         }
@@ -32,3 +32,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+

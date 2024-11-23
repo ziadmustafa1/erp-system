@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
@@ -21,14 +20,24 @@ export default function LoginForm() {
         setIsLoading(true);
 
         try {
-            const result = await signIn('credentials', { email, password, redirect: false });
+            const result = await signIn('credentials', { 
+                email, 
+                password, 
+                redirect: false,
+                callbackUrl: '/dashboard'
+            });
+
+            console.log(result);
 
             if (result && result.ok) {
                 toast({
                     title: 'تم تسجيل الدخول بنجاح',
                     description: 'جاري تحويلك إلى لوحة التحكم...',
                 });
-                router.push('/dashboard');
+                console.log('تحويل إلى الداشبورد');
+                setTimeout(() => {
+                    router.push(result.url || '/dashboard');
+                }, 1000);
             } else {
                 toast({
                     title: 'خطأ في تسجيل الدخول',

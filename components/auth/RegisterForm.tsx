@@ -1,40 +1,53 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { toast } from '@/hooks/use-toast'
 
 export default function RegisterForm() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const router = useRouter();
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+    e.preventDefault()
+    setIsLoading(true)
 
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (response.ok) {
-        // Redirect to login page
-        router.push('/login');
+        toast({
+          title: "تم إنشاء الحساب بنجاح",
+          description: "جاري تحويلك إلى لوحة التحكم...",
+        })
+        router.push('/dashboard')
       } else {
-        setError(data.error);
+        toast({
+          title: "خطأ في إنشاء الحساب",
+          description: data.error,
+          variant: "destructive",
+        })
       }
     } catch (error) {
-      setError('حدث خطأ أثناء إنشاء الحساب');
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء إنشاء الحساب",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -70,8 +83,10 @@ export default function RegisterForm() {
           required
         />
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      <Button type="submit" className="w-full">إنشاء حساب</Button>
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
+      </Button>
     </form>
-  );
+  )
 }
+
